@@ -1,0 +1,43 @@
+# depslib dependency file v1.0
+1524590251 source:/home/adam/Dokumenty/szachy/Game.cpp
+	"Game.h"
+	"TextureManager.h"
+	"Pieces.h"
+	"GameManager.h"
+
+1524323152 /home/adam/Dokumenty/szachy/Game.h
+	<iostream>
+	<GL/gl.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<GL/glu.h>
+	<vector>
+	<array>
+	<typeinfo>
+
+1524315811 source:/home/adam/Dokumenty/szachy/main.cpp
+	<cstdlib>
+	<chrono>
+	<iostream>
+	<thread>
+	"Game.h"
+
+1524490243 source:/home/adam/Dokumenty/szachy/Pieces.cpp
+	"Pieces.h"
+	"TextureManager.h"
+
+1524490243 /home/adam/Dokumenty/szachy/Pieces.h
+	"Game.h"
+
+1520533321 source:/home/adam/Dokumenty/szachy/TextureManager.cpp
+	"TextureManager.h"
+
+1520533321 /home/adam/Dokumenty/szachy/TextureManager.h
+	"Game.h"
+
+1524590226 source:/home/adam/Dokumenty/szachy/GameManager.cpp
+	"GameManager.h"
+
+1524078126 /home/adam/Dokumenty/szachy/GameManager.h
+	"Pieces.h"
+

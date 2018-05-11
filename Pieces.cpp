@@ -71,8 +71,8 @@ void King::render(){
     SDL_RenderCopy(renderer, objTexture, &srcRect, &destRect);
 }
 
-std::array<std::vector<std::pair<int, int>>, 8> King::move(bool black){
-    std::array<std::vector<std::pair<int, int>>, 8> v;
+movements King::move(bool black){
+    movements v;
 
     if(boardX + 1 < 8 && boardY + 1 < 8) v[0].push_back(std::make_pair(boardX  + 1, boardY + 1));
     if(boardX - 1 >= 0 && boardY + 1 < 8) v[1].push_back(std::make_pair(boardX  - 1, boardY + 1));
@@ -117,10 +117,10 @@ void Queen::render(){
     SDL_RenderCopy(renderer, objTexture, &srcRect, &destRect);
 }
 
-std::array<std::vector<std::pair<int, int>>, 8> Queen::move(bool black){
-    std::array<std::vector<std::pair<int, int>>, 8> v;
+movements Queen::move(bool black){
+    movements v;
 
-    for(int i = 0; i < 8; i++){
+    for(int i = 1; i < 8; i++){
         if(boardX + i < 8 && boardY + i < 8) v[0].push_back(std::make_pair(boardX  + i, boardY + i));
         if(boardX - i >= 0 && boardY + i < 8) v[1].push_back(std::make_pair(boardX  - i, boardY + i));
         if(boardX - i >= 0 && boardY - i >= 0) v[2].push_back(std::make_pair(boardX  - i, boardY - i));
@@ -161,10 +161,10 @@ void Bishop::render(){
     SDL_RenderCopy(renderer, objTexture, &srcRect, &destRect);
 }
 
-std::array<std::vector<std::pair<int, int>>, 8> Bishop::move(bool black){
-    std::array<std::vector<std::pair<int, int>>, 8> v;
+movements Bishop::move(bool black){
+    movements v;
 
-    for(int i = 0; i < 8; i++){
+    for(int i = 1; i < 8; i++){
         if(boardX + i < 8 && boardY + i < 8) v[0].push_back(std::make_pair(boardX  + i, boardY + i));
         if(boardX - i >= 0 && boardY + i < 8) v[1].push_back(std::make_pair(boardX  - i, boardY + i));
         if(boardX - i >= 0 && boardY - i >= 0) v[2].push_back(std::make_pair(boardX  - i, boardY - i));
@@ -201,8 +201,8 @@ void Horse::render(){
     SDL_RenderCopy(renderer, objTexture, &srcRect, &destRect);
 }
 
-std::array<std::vector<std::pair<int, int>>, 8> Horse::move(bool black){
-    std::array<std::vector<std::pair<int, int>>, 8> v;
+movements Horse::move(bool black){
+    movements v;
 
     if(boardX + 2 < 8 && boardY + 1 < 8) v[0].push_back(std::make_pair(boardX  + 2, boardY + 1));
     if(boardX + 2 < 8 && boardY - 1 >= 0) v[1].push_back(std::make_pair(boardX + 2, boardY - 1));
@@ -245,10 +245,10 @@ void Rook::render(){
     SDL_RenderCopy(renderer, objTexture, &srcRect, &destRect);
 }
 
-std::array<std::vector<std::pair<int, int>>, 8> Rook::move(bool blackMove){
-    std::array<std::vector<std::pair<int, int>>, 8> v;
+movements Rook::move(bool blackMove){
+    movements v;
 
-    for(int i = 0; i < 8; i ++){
+    for(int i = 1; i < 8; i ++){
         if(boardY + i < 8) v[0].push_back(std::make_pair(boardX, boardY + i));
         if(boardY - i >= 0) v[1].push_back(std::make_pair(boardX, boardY - i));
         if(boardX + i < 8) v[2].push_back(std::make_pair(boardX + i, boardY));
@@ -288,8 +288,8 @@ void Pawn::render(){
     SDL_RenderCopy(renderer, objTexture, &srcRect, &destRect);
 }
 
-std::array<std::vector<std::pair<int, int>>, 8> Pawn::move(bool blackMove){
-    std::array<std::vector<std::pair<int, int>>, 8> v;
+movements Pawn::move(bool blackMove){
+    movements v;
 
     if(!makedMoved){
         if(blackMove){
@@ -297,34 +297,26 @@ std::array<std::vector<std::pair<int, int>>, 8> Pawn::move(bool blackMove){
             v[0].push_back(std::make_pair(boardX, boardY + 2));
 
             if(boardX + 1 < 8 && boardY + 1 < 8) v[1].push_back(std::make_pair(boardX + 1, boardY + 1));
-            else v[1].push_back(std::make_pair(boardX, boardY));
             if(boardX - 1 >= 0 && boardY + 1 < 8) v[2].push_back(std::make_pair(boardX - 1, boardY + 1));
-            else v[2].push_back(std::make_pair(boardX, boardY));
         } else {
             v[0].push_back(std::make_pair(boardX, boardY - 1));
             v[0].push_back(std::make_pair(boardX, boardY - 2));
 
             if(boardX + 1 < 8 && boardY - 1 >= 0) v[1].push_back(std::make_pair(boardX + 1, boardY - 1));
-            else v[1].push_back(std::make_pair(boardX, boardY));
             if(boardX - 1 >= 0 && boardY - 1 >= 0) v[2].push_back(std::make_pair(boardX - 1, boardY - 1));
-            else v[2].push_back(std::make_pair(boardX, boardY));
         }
     } else {
         if((boardY + 1) < 8 && blackMove){
             v[0].push_back(std::make_pair(boardX, boardY + 1));
 
             if(boardX + 1 < 8 && boardY + 1 < 8) v[1].push_back(std::make_pair(boardX + 1, boardY + 1));
-            else v[1].push_back(std::make_pair(boardX, boardY));
             if(boardX - 1 >= 0 && boardY + 1 < 8) v[2].push_back(std::make_pair(boardX - 1, boardY + 1));
-            else v[2].push_back(std::make_pair(boardX, boardY));
         }
         else if((boardY - 1) >= 0 && !blackMove){
             v[0].push_back(std::make_pair(boardX, boardY - 1));
 
             if(boardX + 1 < 8 && boardY - 1 >= 0) v[1].push_back(std::make_pair(boardX + 1, boardY - 1));
-            else v[1].push_back(std::make_pair(boardX, boardY));
             if(boardX - 1 >= 0 && boardY - 1 >= 0) v[2].push_back(std::make_pair(boardX - 1, boardY - 1));
-            else v[2].push_back(std::make_pair(boardX, boardY));
         }
     }
 
@@ -337,4 +329,8 @@ void Pawn::destroy(){
 
 void Pawn::isMoved(){
     this -> makedMoved = true;
+}
+
+bool Pawn::makedMove(){
+    return makedMoved;
 }

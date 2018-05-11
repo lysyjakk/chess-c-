@@ -41,3 +41,87 @@
 1524078126 /home/adam/Dokumenty/szachy/GameManager.h
 	"Pieces.h"
 
+1525949962 source:/home/adam/Pulpit/chess/chess-c-/Game.cpp
+	"Game.h"
+	"TextureManager.h"
+	"Pieces.h"
+	"GameManager.h"
+
+1525949962 /home/adam/Pulpit/chess/chess-c-/Game.h
+	<iostream>
+	<GL/gl.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<GL/glu.h>
+	<vector>
+	<array>
+	<typeinfo>
+
+1525949962 /home/adam/Pulpit/chess/chess-c-/TextureManager.h
+	"Game.h"
+
+1525949962 /home/adam/Pulpit/chess/chess-c-/Pieces.h
+	"Game.h"
+
+1525949962 /home/adam/Pulpit/chess/chess-c-/GameManager.h
+	"Pieces.h"
+
+1525949962 source:/home/adam/Pulpit/chess/chess-c-/GameManager.cpp
+	"GameManager.h"
+
+1525949962 source:/home/adam/Pulpit/chess/chess-c-/main.cpp
+	<cstdlib>
+	<chrono>
+	<iostream>
+	<thread>
+	"Game.h"
+
+1525949962 source:/home/adam/Pulpit/chess/chess-c-/Pieces.cpp
+	"Pieces.h"
+	"TextureManager.h"
+
+1525949962 source:/home/adam/Pulpit/chess/chess-c-/TextureManager.cpp
+	"TextureManager.h"
+
+1526052296 source:/home/adam/Pulpit/chess-c-/Game.cpp
+	"Game.h"
+	"TextureManager.h"
+	"Pieces.h"
+	"GameManager.h"
+
+1525949962 /home/adam/Pulpit/chess-c-/Game.h
+	<iostream>
+	<GL/gl.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<GL/glu.h>
+	<vector>
+	<array>
+	<typeinfo>
+
+1525949962 /home/adam/Pulpit/chess-c-/TextureManager.h
+	"Game.h"
+
+1526050195 /home/adam/Pulpit/chess-c-/Pieces.h
+	"Game.h"
+
+1526051699 /home/adam/Pulpit/chess-c-/GameManager.h
+	"Pieces.h"
+
+1526052296 source:/home/adam/Pulpit/chess-c-/GameManager.cpp
+	"GameManager.h"
+
+1526042364 source:/home/adam/Pulpit/chess-c-/main.cpp
+	<cstdlib>
+	<chrono>
+	<iostream>
+	<thread>
+	"Game.h"
+
+1526050848 source:/home/adam/Pulpit/chess-c-/Pieces.cpp
+	"Pieces.h"
+	"TextureManager.h"
+
+1525949962 source:/home/adam/Pulpit/chess-c-/TextureManager.cpp
+	"TextureManager.h"
+

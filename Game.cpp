@@ -76,9 +76,8 @@ void Game::handleEvent(){
                         int8_t moduloY = ((int)event.button.y - 27) / 100;
                         //moze umiescic
                         if(gameManager.canMove(pieceX, pieceY, moduloX, moduloY)){
-//                            gameManager.board[pieceY][pieceX] -> grab((Sint32)((moduloX * 100) + 72), (Sint32)((moduloY * 100) + 72));
-//                            gameManager.board[moduloY][moduloX] = gameManager.board[pieceY][pieceX];
-//                            gameManager.board[pieceY][pieceX] = nullptr;
+                            gameManager.board[pieceY][pieceX] -> grab((Sint32)((moduloX * 100) + 72), (Sint32)((moduloY * 100) + 72));
+                            gameManager.makeMove(pieceX, pieceY, moduloX, moduloY);
                         } else {
                             gameManager.board[pieceY][pieceX] -> grab((Sint32)((pieceX * 100) + 72), (Sint32)((pieceY * 100) + 72));
                         }

@@ -3,6 +3,8 @@
 
 #include "Game.h"
 
+typedef std::array<std::vector<std::pair<int, int>>, 8> movements;
+
 class Pieces{
     public:
         int8_t boardX, boardY;
@@ -10,7 +12,7 @@ class Pieces{
 
         Pieces(int xPos, int yPos, const char* texture, SDL_Renderer *renderer, bool black);
 
-        virtual std::array<std::vector<std::pair<int, int>>, 8> move(bool blackMove) = 0;
+        virtual movements move(bool blackMove) = 0;
         virtual void update() = 0;
         virtual void render() = 0;
         virtual void destroy() = 0;
@@ -107,6 +109,8 @@ class Pawn: public Pieces{
         virtual void render();
         virtual void destroy();
         virtual void isMoved();
+
+        bool makedMove();
 
     private:
         bool makedMoved;

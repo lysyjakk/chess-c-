@@ -22,7 +22,7 @@ bool GameManager::canMove(int8_t currentX, int8_t currentY, int8_t targetX, int8
             if(typeid(*board[currentY][currentX]) == typeid(King)){
                 King* king = (King*)board[currentY][currentX];
 
-                if(!canKingMove(targetX, targetY))
+                if(!canKingMove(targetX, targetY, blackMove,  false))
                     flag = false;
 
                 if((targetX == 6 || targetX == 2) && !king -> makedMove() && flag){
@@ -109,7 +109,7 @@ bool GameManager::canMove(int8_t currentX, int8_t currentY, int8_t targetX, int8
     return false;
 }
 
-bool GameManager::canKingMove(int8_t targetX, int8_t targetY){
+bool GameManager::canKingMove(int8_t targetX, int8_t targetY, bool blackTurn, bool check){
     movements v;
     bool freeField = true;
     bool breakLoops = false;
@@ -119,8 +119,8 @@ bool GameManager::canKingMove(int8_t targetX, int8_t targetY){
             for(int k = 0; k < 8; k++){
 
                 if(board[i][k] == nullptr) continue;
-                else if(board[i][k] -> black != blackMove){
-                    v = board[i][k] -> move(!blackMove);
+                else if(board[i][k] -> black != blackTurn){
+                    v = board[i][k] -> move(!blackTurn);
 
                     if(!v.empty()){
 
@@ -139,11 +139,19 @@ bool GameManager::canKingMove(int8_t targetX, int8_t targetY){
                                         if(board[v[g][r].second][v[g][r].first] != nullptr &&
                                             typeid(*board[v[g][r].second][v[g][r].first]) != typeid(King)){
                                             flag = false;
+
                                             break;
                                         }
                                     }
 
                                     if(flag){
+
+                                        if(check){
+                                            King *king = (King*)board[targetY][targetX];
+                                            king -> checkX = v[g][p - 1].first;
+                                            king -> checkY = v[g][p - 1].second;
+                                        }
+
                                         breakLoops = true;
                                         throw breakLoops;
                                     }
@@ -256,4 +264,87 @@ void GameManager::makeMove(int8_t currentX, int8_t currentY, int8_t targetX, int
     board[targetY][targetX] -> boardX = targetX;
     board[targetY][targetX] -> boardY = targetY;
     board[targetY][targetX] -> isMoved();
+}
+
+bool GameManager::checkMate(){
+    King *king = nullptr;
+    bool gameEnd = false;
+    bool breakLoops = false;
+
+    for(int i = 0; i < 8; i++){
+        for(int k = 0; k < 8; k++){
+            if(board[i][k] == nullptr) continue;
+            if(typeid(*board[i][k]) == typeid(King) && board[i][k] -> black == blackMove)
+                king = (King*)board[i][k];
+        }
+    }
+
+    if(king != nullptr){
+        if(!canKingMove(king -> boardX, king -> boardY, blackMove,  true)){
+        std::cout<<"cds";
+            movements v = king -> move(blackMove);
+
+            bool kingCantEscape = true;
+            bool pieceCantCover = true;
+
+            if(!v.empty()){
+                for(int i = 0; i < 8; i++){
+
+                    if(v[i].empty()) continue;
+                    else if(board[v[i][0].second][v[i][0].first] != nullptr) continue;
+                    else if(canKingMove(v[i][0].first, v[i][0].second, blackMove, false)){
+                        kingCantEscape = false;
+                        break;
+                    }
+
+                }
+            } // v empty
+
+            if(kingCantEscape){
+            std::cout<<"cds22";
+                try{
+                    for(int i = 0; i < 8; i++){
+                        for(int k = 0; k < 8; k++){
+
+                            if(board[i][k] == nullptr) continue;
+                            else if(board[i][k] -> black == blackMove){
+
+                                v = board[i][k] -> move(blackMove);
+
+                                if(!v.empty()){
+                                    for(int g = 0; g < 8; g++){
+                                        for(int h = 0; h < 8; h++){
+                                            if(!v[g].empty()){
+
+                                                if(typeid(*board[i][k]) == typeid(Pawn) && g != 0) break;
+                                                else if(v[g][h].first == king -> checkX && v[g][h].second == king -> checkY &&
+                                                        board[i][k] != king){
+                                                    breakLoops = true;
+                                                    throw breakLoops;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                catch(bool breakLoops){
+                    if(breakLoops)
+                        pieceCantCover = false;
+                }
+
+            } // king cant escape
+
+            if(kingCantEscape && pieceCantCover){
+                gameEnd = true;
+                std::cout<<"cds3";
+            }
+
+        }//if(!canKingMove(king -> boardX, king -> boardY, !blackMove,  true))
+    }
+
+    return gameEnd;
 }

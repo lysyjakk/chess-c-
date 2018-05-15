@@ -48,6 +48,8 @@ void Pieces::grab(Sint32 x, Sint32 y){
 King::King(int xPos, int yPos, const char* texture, SDL_Renderer *renderer, bool black):Pieces(xPos, yPos, texture, renderer, black){
     this -> makedMoved = false;
     this -> weight = -1;
+    this -> checkX = -1;
+    this -> checkY = -1;
 }
 
 King::~King(){

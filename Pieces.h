@@ -31,6 +31,9 @@ class Pieces{
 
 class King: public Pieces{
     public:
+        int8_t checkX;
+        int8_t checkY;
+
         King(int xPos, int yPos, const char* texture, SDL_Renderer *renderer, bool black);
         ~King();
 

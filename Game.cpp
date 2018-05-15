@@ -78,6 +78,9 @@ void Game::handleEvent(){
                         if(gameManager.canMove(pieceX, pieceY, moduloX, moduloY)){
                             gameManager.board[pieceY][pieceX] -> grab((Sint32)((moduloX * 100) + 72), (Sint32)((moduloY * 100) + 72));
                             gameManager.makeMove(pieceX, pieceY, moduloX, moduloY);
+
+                            if(gameManager.checkMate())
+                                runnging = false;
                         } else {
                             gameManager.board[pieceY][pieceX] -> grab((Sint32)((pieceX * 100) + 72), (Sint32)((pieceY * 100) + 72));
                         }

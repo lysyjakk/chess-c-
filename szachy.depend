@@ -83,7 +83,7 @@
 1525949962 source:/home/adam/Pulpit/chess/chess-c-/TextureManager.cpp
 	"TextureManager.h"
 
-1526052296 source:/home/adam/Pulpit/chess-c-/Game.cpp
+1526222797 source:/home/adam/Pulpit/chess-c-/Game.cpp
 	"Game.h"
 	"TextureManager.h"
 	"Pieces.h"
@@ -102,13 +102,13 @@
 1525949962 /home/adam/Pulpit/chess-c-/TextureManager.h
 	"Game.h"
 
-1526050195 /home/adam/Pulpit/chess-c-/Pieces.h
+1526221774 /home/adam/Pulpit/chess-c-/Pieces.h
 	"Game.h"
 
-1526051699 /home/adam/Pulpit/chess-c-/GameManager.h
+1526234336 /home/adam/Pulpit/chess-c-/GameManager.h
 	"Pieces.h"
 
-1526052296 source:/home/adam/Pulpit/chess-c-/GameManager.cpp
+1526389374 source:/home/adam/Pulpit/chess-c-/GameManager.cpp
 	"GameManager.h"
 
 1526042364 source:/home/adam/Pulpit/chess-c-/main.cpp
@@ -118,7 +118,7 @@
 	<thread>
 	"Game.h"
 
-1526050848 source:/home/adam/Pulpit/chess-c-/Pieces.cpp
+1526221914 source:/home/adam/Pulpit/chess-c-/Pieces.cpp
 	"Pieces.h"
 	"TextureManager.h"
 

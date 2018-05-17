@@ -32,8 +32,12 @@ private:
     SDL_Renderer *renderer;
     SDL_Rect srcRect, destRect;
 
+    SDL_Renderer *promotionRend;
+    SDL_Window *promotionWin;
+
     void fieldSelectionMove(Sint32 x, Sint32 y);
     void startGame();
+    void promotionWindow();
 };
 
 

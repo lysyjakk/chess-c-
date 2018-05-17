@@ -1,6 +1,7 @@
 #include "GameManager.h"
 
 Pieces* lastMovedPawn;
+bool check = false;
 
 
 GameManager::GameManager(){
@@ -39,6 +40,36 @@ bool GameManager::canMove(int currentX, int currentY, int targetX, int targetY){
             }
         } else {
             flag = true;
+        }
+
+        if(check && flag){
+            Pieces *copyBoard[8][8];
+            King *king;
+
+            for(int i = 0; i < 8; i++){
+                for(int k = 0; k < 8; k++){
+                    copyBoard[i][k] = board[i][k];
+
+                    if(board[i][k] == nullptr) continue;
+                    if(typeid(*board[i][k]) == typeid(King) && board[i][k] -> black == blackMove)
+                        king = (King*)board[i][k];
+                }
+            }
+
+            board[targetY][targetX] = board[currentY][currentX];
+            board[currentY][currentX] = nullptr;
+            board[targetY][targetX] -> boardX = targetX;
+            board[targetY][targetX] -> boardY = targetY;
+
+            if(!canKingMove(king -> boardX, king -> boardY, blackMove, false))
+                flag = false;
+            else
+                check = false;
+
+            for(int i = 0; i < 8; i++){
+                for(int k = 0; k < 8; k++)
+                    board[i][k] = copyBoard[i][k];
+            }
         }
 
         if(flag){
@@ -295,6 +326,9 @@ bool GameManager::checkMate(){
             if(kingCantEscape && pieceCantCover)
                 gameEnd = true;
 
+            if(!gameEnd)
+                check = true;
+
             king -> checkX = -1;
             king -> checkY = -1;
             king -> whoCheckX = -1;
@@ -315,7 +349,6 @@ bool GameManager::move(Pieces *wsk, int x, int y){
         v = wsk -> move(blackMove);
 
         if(!v.empty()){
-
             try{
                 for(int i = 0; i < 8; i++){
 
@@ -327,7 +360,6 @@ bool GameManager::move(Pieces *wsk, int x, int y){
                             //* Sprawdzanie ruchów piona *//
 
                             if(typeid(*wsk) == typeid(Pawn)){
-
                                 if(i == 0){
                                     if(k == 0){
                                         if(blackMove && y + 1 < 8){
@@ -336,7 +368,6 @@ bool GameManager::move(Pieces *wsk, int x, int y){
                                                 throw breakLoops;
                                             }
                                         }
-
                                         else if(!blackMove && y - 1 >= 0){
                                             if(board[y][x] == nullptr){
                                                 breakLoops = true;
@@ -344,7 +375,6 @@ bool GameManager::move(Pieces *wsk, int x, int y){
                                             }
                                         }
                                     }
-
                                     else{
                                         if(blackMove){
                                             if(board[y][x] == nullptr && board[y-1][x] == nullptr){
@@ -352,7 +382,6 @@ bool GameManager::move(Pieces *wsk, int x, int y){
                                                 throw breakLoops;
                                             }
                                         }
-
                                         else{
                                             if(board[y][x] == nullptr && board[y+1][x] == nullptr){
                                                 breakLoops = true;
@@ -362,14 +391,13 @@ bool GameManager::move(Pieces *wsk, int x, int y){
                                     }
                                 }
 
-                                else{
+                                else{   // k != 0
                                     if(blackMove){
                                         if(!(board[v[i][0].second][v[i][0].first] == nullptr ? true : board[v[i][0].second][v[i][0].first] -> black)){
                                             breakLoops = true;
                                             throw breakLoops;
                                         }
                                     }
-
                                     else{
                                         if(!(board[v[i][0].second][v[i][0].first] == nullptr ? true : !board[v[i][0].second][v[i][0].first] -> black)){
                                             breakLoops = true;
@@ -377,7 +405,7 @@ bool GameManager::move(Pieces *wsk, int x, int y){
                                         }
                                     }
                                 }
-                            }//* pion *//
+                            } //if(typeid(*wsk) == typeid(Pawn))
 
                             //* Sprawdzanie krola *//
 
@@ -389,7 +417,6 @@ bool GameManager::move(Pieces *wsk, int x, int y){
                             }//Krol
 
                             else{
-
                                 bool check = true;
 
                                 for(int g = 0; g < k; g++){
@@ -406,13 +433,12 @@ bool GameManager::move(Pieces *wsk, int x, int y){
                     }
                 }
             }
-
             catch(bool breakLoops){
                 if(breakLoops)
                     flag = true;
             }
         }
-    }
+    } //if(board[y][x] == nullptr || (board[y][x] != nullptr && board[y][x] -> black != blackMove))
 
     return flag;
 }

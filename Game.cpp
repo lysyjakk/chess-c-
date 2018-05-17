@@ -40,13 +40,14 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 
         runnging = true;
     } else {
+        std::cout << "SDL Init failed!" << std::endl;
         runnging = false;
     }
 
     boardTexture = TextureManager::LoadTexture("./texture/GreenChessboard.png", renderer);
     fieldSelection = TextureManager::LoadTexture("./texture/field.png", renderer);
-    //blackKing = new King(27, 27, "./texture/BlackKing.png", renderer);
     startGame();
+    promotionWindow();
 }
 
 void Game::handleEvent(){
@@ -105,6 +106,7 @@ void Game::update(){
 
 void Game::render(){
     SDL_RenderClear(renderer);
+    SDL_RenderClear(promotionRend);
     SDL_RenderCopy(renderer, boardTexture, NULL, NULL);
     if(pieceGrab)
         SDL_RenderCopy(renderer, fieldSelection, &srcRect, &destRect);
@@ -116,6 +118,7 @@ void Game::render(){
         }
     }
     SDL_RenderPresent(renderer);
+    SDL_RenderPresent(promotionRend);
 }
 
 void Game::clean(){
@@ -133,13 +136,13 @@ bool Game::isRunning(){
 void Game::startGame(){
 
 int start[8][8] = {-1, -2, -3, -4, -5, -3, -2, -1,
-                      -6, -6, -6, -6, -6, -6, -6, -6,
-                       0,  0,  0,  0,  0,  0,  0,  0,
-                       0,  0,  0,  0,  0,  0,  0,  0,
-                       0,  0,  0,  0,  0,  0,  0,  0,
-                       0,  0,  0,  0,  0,  0,  0,  0,
-                       6,  6,  6,  6,  6,  6,  6,  6,
-                       1,  2,  3,  4,  5,  3,  2,  1};
+                   -6, -6, -6, -6, -6, -6, -6, -6,
+                    0,  0,  0,  0,  0,  0,  0,  0,
+                    0,  0,  0,  0,  0,  0,  0,  0,
+                    0,  0,  0,  0,  0,  0,  0,  0,
+                    0,  0,  0,  0,  0,  0,  0,  0,
+                    6,  6,  6,  6,  6,  6,  6,  6,
+                    1,  2,  3,  4,  5,  3,  2,  1};
 
     for(int i = 0; i < 8; i++){
         for(int k = 0; k < 8; k++){
@@ -214,4 +217,16 @@ void Game::fieldSelectionMove(Sint32 x, Sint32 y){
     destRect.y = fieldPositionY;
     destRect.w = srcRect.w;
     destRect.h = srcRect.h;
+}
+
+void Game::promotionWindow(){
+    if(SDL_Init(SDL_INIT_VIDEO) == 0){
+         promotionWin = SDL_CreateWindow("Promotion", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 150, false);
+         promotionRend = SDL_CreateRenderer(promotionWin, -1, 0);
+
+         if(promotionRend){
+            SDL_SetRenderDrawColor(promotionRend, 255, 255, 255, 255);
+         }
+    }
+
 }

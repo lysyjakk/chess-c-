@@ -89,7 +89,7 @@
 	"Pieces.h"
 	"GameManager.h"
 
-1525949962 /home/adam/Pulpit/chess-c-/Game.h
+1526572792 /home/adam/Pulpit/chess-c-/Game.h
 	<iostream>
 	<GL/gl.h>
 	<SDL2/SDL.h>
@@ -108,7 +108,7 @@
 1526485579 /home/adam/Pulpit/chess-c-/GameManager.h
 	"Pieces.h"
 
-1526556798 source:/home/adam/Pulpit/chess-c-/GameManager.cpp
+1526570939 source:/home/adam/Pulpit/chess-c-/GameManager.cpp
 	"GameManager.h"
 
 1526042364 source:/home/adam/Pulpit/chess-c-/main.cpp

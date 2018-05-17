@@ -50,6 +50,8 @@ King::King(int xPos, int yPos, const char* texture, SDL_Renderer *renderer, bool
     this -> weight = -1;
     this -> checkX = -1;
     this -> checkY = -1;
+    this -> whoCheckX = -1;
+    this -> whoCheckY = -1;
 }
 
 King::~King(){

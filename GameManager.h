@@ -8,16 +8,17 @@ class GameManager{
         Pieces *board[8][8];
 
         GameManager();
-        bool canMove(int8_t currentX, int8_t currentY, int8_t targetX, int8_t targetY);
+        bool canMove(int currentX, int currentY, int targetX, int targetY);
         bool checkMate();
-        void makeMove(int8_t currentX, int8_t currentY, int8_t targetX, int8_t targetY);
+        void makeMove(int currentX, int currentY, int targetX, int targetY);
 
     private:
         bool blackMove;
 
-        bool canKingMove(int8_t targetX, int8_t targetY, bool blackTurn, bool check);
-        bool castle(int8_t rookX, int8_t currentX, int8_t currentY);
-        bool enPassant(int8_t currentX, int8_t currentY, int8_t targetX, int8_t targetY, movements v);
+        bool move(Pieces* wks, int x, int y);
+        bool canKingMove(int targetX, int targetY, bool blackTurn, bool check);
+        bool castle(int rookX, int currentX, int currentY);
+        bool enPassant(int currentX, int currentY, int targetX, int targetY);
 };
 
 

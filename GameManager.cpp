@@ -7,109 +7,54 @@ GameManager::GameManager(){
     blackMove = false;
 }
 
-bool GameManager::canMove(int8_t currentX, int8_t currentY, int8_t targetX, int8_t targetY){
+bool GameManager::canMove(int currentX, int currentY, int targetX, int targetY){
+
+    bool flag = false;
 
     if(board[currentY][currentX] -> black == blackMove){
 
-        movements v;
-
-        bool flag = true;
-
-        v = board[currentY][currentX] -> move(blackMove);
-
-        if(!v.empty()){
-
+        if(!move(board[currentY][currentX], targetX, targetY)){
             if(typeid(*board[currentY][currentX]) == typeid(King)){
                 King* king = (King*)board[currentY][currentX];
 
-                if(!canKingMove(targetX, targetY, blackMove,  false))
-                    flag = false;
-
-                if((targetX == 6 || targetX == 2) && !king -> makedMove() && flag){
-                    int8_t rookX = targetX == 6 ? 7 : 0;
+                if((targetX == 6 || targetX == 2) && !king -> makedMove()){
+                    int rookX = targetX == 6 ? 7 : 0;
 
                     if(typeid(*board[currentY][rookX]) == typeid(Rook)){
                         Rook* rook = (Rook*)board[currentY][rookX];
 
                             if(!rook -> makedMove()){
                                 if(castle(rookX, currentX, currentY)){
-                                    blackMove ^= true;
-                                    return true;
-                                }
-                            }
-                    }
-                }
-            }
-
-            for(int i = 0; i < 8; i++){
-                for(int k = 0; k < v[i].size(); k++){
-
-                    if(v[i][k].first == targetX && v[i][k].second == targetY){
-
-                        for(int g = 0; g < k; g++){
-                            if(board[v[i][g].second][v[i][g].first] != nullptr)
-                                flag = false;
-                        }
-
-                        if(board[targetY][targetX] != nullptr && flag){
-                            if(!((board[targetY][targetX] -> black && !blackMove) ||
-                                (!board[targetY][targetX] -> black && blackMove)))
-                                    flag = false;
-                        }
-
-                        if(typeid(*board[currentY][currentX]) == typeid(Pawn) && flag){
-
-                            if(i == 0){
-                                if(blackMove){
-                                    if(currentY + 1 < 8){
-                                        if(board[currentY + 1][currentX] != nullptr)
-                                            flag = false;
-                                    }
-                                } else {
-                                    if(currentY - 1 >= 0){
-                                        if(board[currentY - 1][currentX] != nullptr)
-                                            flag = false;
-                                    }
-                                }
-                            }
-                            else if(i != 0){
-                                if(blackMove){
-                                    if(board[v[i][0].second][v[i][0].first] == nullptr ? true : board[v[i][0].second][v[i][0].first] -> black)
-                                            flag = false;
-                                } else {
-                                    if(board[v[i][0].second][v[i][0].first] == nullptr ? true : !board[v[i][0].second][v[i][0].first] -> black)
-                                            flag = false;
-                                }
-
-                                if(enPassant(currentX, currentY, targetX, targetY, v))
                                     flag = true;
-
+                                }
                             }
                         }
-
-                        if(flag){
-                            if(typeid(*board[currentY][currentX]) == typeid(Pawn) && !((Pawn*)board[currentY][currentX]) -> makedMove()){
-                                lastMovedPawn = (Pawn*)board[currentY][currentX];
-                            }
-                            else
-                                lastMovedPawn = nullptr;
-
-                            if(board[targetY][targetX] != nullptr)
-                                board[targetY][targetX] -> destroy();
-
-                            blackMove ^= true;
-                            return true;
-                        }
-                    }
                 }
             }
+
+            else if(typeid(*board[currentY][currentX]) == typeid(Pawn)){
+                if(enPassant(currentX, currentY, targetX, targetY)){
+                    flag = true;
+                }
+            }
+        } else {
+            flag = true;
+        }
+
+        if(flag){
+            if(typeid(*board[currentY][currentX]) == typeid(Pawn) && !((Pawn*)board[currentY][currentX]) -> makedMove())
+                    lastMovedPawn = (Pawn*)board[currentY][currentX];
+            else
+                lastMovedPawn = nullptr;
+
+            blackMove ^= true;
         }
     }
 
-    return false;
+    return flag;
 }
 
-bool GameManager::canKingMove(int8_t targetX, int8_t targetY, bool blackTurn, bool check){
+bool GameManager::canKingMove(int targetX, int targetY, bool blackTurn, bool check){
     movements v;
     bool freeField = true;
     bool breakLoops = false;
@@ -135,7 +80,7 @@ bool GameManager::canKingMove(int8_t targetX, int8_t targetY, bool blackTurn, bo
                                     if(typeid(*board[i][k]) == typeid(Pawn) && g == 0) continue;
                                     bool flag = true;
 
-                                    for(int r = 1; r < p; r++){
+                                    for(int r = 0; r < p; r++){
                                         if(board[v[g][r].second][v[g][r].first] != nullptr &&
                                             typeid(*board[v[g][r].second][v[g][r].first]) != typeid(King)){
                                             flag = false;
@@ -148,8 +93,18 @@ bool GameManager::canKingMove(int8_t targetX, int8_t targetY, bool blackTurn, bo
 
                                         if(check){
                                             King *king = (King*)board[targetY][targetX];
-                                            king -> checkX = v[g][p - 1].first;
-                                            king -> checkY = v[g][p - 1].second;
+
+                                            king -> whoCheckX = board[i][k] -> boardX;
+                                            king -> whoCheckY = board[i][k] -> boardY;
+
+                                            if(p != 0){
+                                                king -> checkX = v[g][p-1].first;
+                                                king -> checkY = v[g][p-1].second;
+                                            } else {
+                                                king -> checkX = -1;
+                                                king -> checkY = -1;
+                                            }
+
                                         }
 
                                         breakLoops = true;
@@ -170,7 +125,7 @@ bool GameManager::canKingMove(int8_t targetX, int8_t targetY, bool blackTurn, bo
     return freeField;
 }
 
-bool GameManager::castle(int8_t rookX, int8_t currentX, int8_t currentY){
+bool GameManager::castle(int rookX, int currentX, int currentY){
 
     /* Roszada */
 
@@ -207,11 +162,12 @@ bool GameManager::castle(int8_t rookX, int8_t currentX, int8_t currentY){
     return flag;
 }
 
-bool GameManager::enPassant(int8_t currentX, int8_t currentY, int8_t targetX, int8_t targetY, movements v){
+bool GameManager::enPassant(int currentX, int currentY, int targetX, int targetY){
 
     /* Bicie w przelocie */
 
     bool flag = false;
+    movements v = board[currentY][currentX] -> move(blackMove);
 
     if(blackMove){
         if((currentX + 1 < 8 && currentX - 1 >= 0) && currentY == 4)
@@ -258,7 +214,11 @@ bool GameManager::enPassant(int8_t currentX, int8_t currentY, int8_t targetX, in
     return flag;
 }
 
-void GameManager::makeMove(int8_t currentX, int8_t currentY, int8_t targetX, int8_t targetY){
+void GameManager::makeMove(int currentX, int currentY, int targetX, int targetY){
+
+    if(board[targetY][targetX] != nullptr)
+        board[targetY][targetX] -> destroy();
+
     board[targetY][targetX] = board[currentY][currentX];
     board[currentY][currentX] = nullptr;
     board[targetY][targetX] -> boardX = targetX;
@@ -281,7 +241,6 @@ bool GameManager::checkMate(){
 
     if(king != nullptr){
         if(!canKingMove(king -> boardX, king -> boardY, blackMove,  true)){
-        std::cout<<"cds";
             movements v = king -> move(blackMove);
 
             bool kingCantEscape = true;
@@ -291,7 +250,10 @@ bool GameManager::checkMate(){
                 for(int i = 0; i < 8; i++){
 
                     if(v[i].empty()) continue;
-                    else if(board[v[i][0].second][v[i][0].first] != nullptr) continue;
+
+                    else if(board[v[i][0].second][v[i][0].first] != nullptr &&
+                            board[v[i][0].second][v[i][0].first] -> black == blackMove) continue;
+
                     else if(canKingMove(v[i][0].first, v[i][0].second, blackMove, false)){
                         kingCantEscape = false;
                         break;
@@ -301,36 +263,28 @@ bool GameManager::checkMate(){
             } // v empty
 
             if(kingCantEscape){
-            std::cout<<"cds22";
                 try{
                     for(int i = 0; i < 8; i++){
                         for(int k = 0; k < 8; k++){
 
                             if(board[i][k] == nullptr) continue;
-                            else if(board[i][k] -> black == blackMove){
+                            else if(board[i][k] -> black == blackMove && board[i][k] != king){
 
-                                v = board[i][k] -> move(blackMove);
+                                if(move(board[i][k], king -> whoCheckX, king -> whoCheckY)){
+                                    breakLoops = true;
+                                    throw breakLoops;
+                                }
 
-                                if(!v.empty()){
-                                    for(int g = 0; g < 8; g++){
-                                        for(int h = 0; h < 8; h++){
-                                            if(!v[g].empty()){
-
-                                                if(typeid(*board[i][k]) == typeid(Pawn) && g != 0) break;
-                                                else if(v[g][h].first == king -> checkX && v[g][h].second == king -> checkY &&
-                                                        board[i][k] != king){
-                                                    breakLoops = true;
-                                                    throw breakLoops;
-                                                }
-                                            }
-                                        }
+                                else if(king -> checkX != -1 && king -> checkY != -1){
+                                    if(move(board[i][k], king -> checkX, king -> checkY)){
+                                        breakLoops = true;
+                                        throw breakLoops;
                                     }
                                 }
                             }
                         }
                     }
                 }
-
                 catch(bool breakLoops){
                     if(breakLoops)
                         pieceCantCover = false;
@@ -338,13 +292,127 @@ bool GameManager::checkMate(){
 
             } // king cant escape
 
-            if(kingCantEscape && pieceCantCover){
+            if(kingCantEscape && pieceCantCover)
                 gameEnd = true;
-                std::cout<<"cds3";
-            }
 
+            king -> checkX = -1;
+            king -> checkY = -1;
+            king -> whoCheckX = -1;
+            king -> whoCheckY = -1;
         }//if(!canKingMove(king -> boardX, king -> boardY, !blackMove,  true))
     }
 
     return gameEnd;
+}
+
+bool GameManager::move(Pieces *wsk, int x, int y){
+    bool flag = false;
+    bool breakLoops = false;
+    movements v;
+
+
+    if(board[y][x] == nullptr || (board[y][x] != nullptr && board[y][x] -> black != blackMove)){
+        v = wsk -> move(blackMove);
+
+        if(!v.empty()){
+
+            try{
+                for(int i = 0; i < 8; i++){
+
+                    if(v[i].empty()) continue;
+
+                    for(int k = 0; k < v[i].size(); k++){
+                        if(v[i][k].first == x && v[i][k].second == y){
+
+                            //* Sprawdzanie ruchów piona *//
+
+                            if(typeid(*wsk) == typeid(Pawn)){
+
+                                if(i == 0){
+                                    if(k == 0){
+                                        if(blackMove && y + 1 < 8){
+                                            if(board[y][x] == nullptr){
+                                                breakLoops = true;
+                                                throw breakLoops;
+                                            }
+                                        }
+
+                                        else if(!blackMove && y - 1 >= 0){
+                                            if(board[y][x] == nullptr){
+                                                breakLoops = true;
+                                                throw breakLoops;
+                                            }
+                                        }
+                                    }
+
+                                    else{
+                                        if(blackMove){
+                                            if(board[y][x] == nullptr && board[y-1][x] == nullptr){
+                                                breakLoops = true;
+                                                throw breakLoops;
+                                            }
+                                        }
+
+                                        else{
+                                            if(board[y][x] == nullptr && board[y+1][x] == nullptr){
+                                                breakLoops = true;
+                                                throw breakLoops;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                else{
+                                    if(blackMove){
+                                        if(!(board[v[i][0].second][v[i][0].first] == nullptr ? true : board[v[i][0].second][v[i][0].first] -> black)){
+                                            breakLoops = true;
+                                            throw breakLoops;
+                                        }
+                                    }
+
+                                    else{
+                                        if(!(board[v[i][0].second][v[i][0].first] == nullptr ? true : !board[v[i][0].second][v[i][0].first] -> black)){
+                                            breakLoops = true;
+                                            throw breakLoops;
+                                        }
+                                    }
+                                }
+                            }//* pion *//
+
+                            //* Sprawdzanie krola *//
+
+                            else if(typeid(*wsk) == typeid(King)){
+                                if(canKingMove(x, y, blackMove,  false)){
+                                    breakLoops = true;
+                                    throw breakLoops;
+                                }
+                            }//Krol
+
+                            else{
+
+                                bool check = true;
+
+                                for(int g = 0; g < k; g++){
+                                    if(board[v[i][g].second][v[i][g].first] != nullptr)
+                                        check = false;
+                                }
+
+                                if(check){
+                                    breakLoops = true;
+                                    throw breakLoops;
+                                }
+                            }
+                        }//  if(v[i][k].first == x && v[i][k].second == y)
+                    }
+                }
+            }
+
+            catch(bool breakLoops){
+                if(breakLoops)
+                    flag = true;
+            }
+        }
+    }
+
+    return flag;
 }

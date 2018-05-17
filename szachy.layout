@@ -4,43 +4,44 @@
 	<ActiveTarget name="Debug" />
 	<File name="Pieces.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="799" topLine="21" />
+			<Cursor1 position="395" topLine="15" />
 		</Cursor>
 	</File>
-	<File name="Pieces.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
+	<File name="GameManager.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1297" topLine="63" />
+			<Cursor1 position="647" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Game.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="556" topLine="4" />
 		</Cursor>
 	</File>
 	<File name="Game.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2074" topLine="54" />
+			<Cursor1 position="2254" topLine="57" />
 		</Cursor>
+	</File>
+	<File name="Pieces.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="708" topLine="21" />
+		</Cursor>
+	</File>
+	<File name="GameManager.cpp" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8598" topLine="68" />
+		</Cursor>
+		<Folding>
+			<Collapse line="9" />
+			<Collapse line="56" />
+			<Collapse line="127" />
+			<Collapse line="164" />
+			<Collapse line="216" />
+		</Folding>
 	</File>
 	<File name="main.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="415" topLine="0" />
 		</Cursor>
-	</File>
-	<File name="GameManager.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="493" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Game.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="556" topLine="6" />
-		</Cursor>
-	</File>
-	<File name="GameManager.cpp" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="11419" topLine="110" />
-		</Cursor>
-		<Folding>
-			<Collapse line="9" />
-			<Collapse line="172" />
-			<Collapse line="209" />
-			<Collapse line="260" />
-		</Folding>
 	</File>
 </CodeBlocks_layout_file>

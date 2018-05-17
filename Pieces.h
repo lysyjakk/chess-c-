@@ -7,7 +7,7 @@ typedef std::array<std::vector<std::pair<int, int>>, 8> movements;
 
 class Pieces{
     public:
-        int8_t boardX, boardY;
+        int boardX, boardY;
         bool black;
 
         Pieces(int xPos, int yPos, const char* texture, SDL_Renderer *renderer, bool black);
@@ -22,7 +22,7 @@ class Pieces{
 
     protected:
         int xPos, yPos;
-        int8_t weight;
+        int weight;
 
         SDL_Texture *objTexture;
         SDL_Rect srcRect, destRect;
@@ -31,8 +31,8 @@ class Pieces{
 
 class King: public Pieces{
     public:
-        int8_t checkX;
-        int8_t checkY;
+        int checkX, checkY;
+        int whoCheckX, whoCheckY;
 
         King(int xPos, int yPos, const char* texture, SDL_Renderer *renderer, bool black);
         ~King();

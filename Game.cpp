@@ -10,7 +10,7 @@ GameManager gameManager;
 //Pieces *board[8][8];
 
 bool pieceGrab = false;
-int8_t pieceX, pieceY;
+int pieceX, pieceY;
 
 
 Game::Game(){
@@ -61,8 +61,8 @@ void Game::handleEvent(){
             case SDL_MOUSEBUTTONDOWN:
                 if(event.button.button == SDL_BUTTON_LEFT){
                     if(!pieceGrab){
-                        int8_t moduloX = ((int)event.button.x - 27) / 100;
-                        int8_t moduloY = ((int)event.button.y - 27) / 100;
+                        int moduloX = ((int)event.button.x - 27) / 100;
+                        int moduloY = ((int)event.button.y - 27) / 100;
 
                         if(gameManager.board[moduloY][moduloX] == nullptr) break;
 
@@ -72,8 +72,8 @@ void Game::handleEvent(){
 
                     } else {
                         pieceGrab = false;
-                        int8_t moduloX = ((int)event.button.x - 27) / 100;
-                        int8_t moduloY = ((int)event.button.y - 27) / 100;
+                        int moduloX = ((int)event.button.x - 27) / 100;
+                        int moduloY = ((int)event.button.y - 27) / 100;
                         //moze umiescic
                         if(gameManager.canMove(pieceX, pieceY, moduloX, moduloY)){
                             gameManager.board[pieceY][pieceX] -> grab((Sint32)((moduloX * 100) + 72), (Sint32)((moduloY * 100) + 72));
@@ -132,7 +132,7 @@ bool Game::isRunning(){
 
 void Game::startGame(){
 
-int8_t start[8][8] = {-1, -2, -3, -4, -5, -3, -2, -1,
+int start[8][8] = {-1, -2, -3, -4, -5, -3, -2, -1,
                       -6, -6, -6, -6, -6, -6, -6, -6,
                        0,  0,  0,  0,  0,  0,  0,  0,
                        0,  0,  0,  0,  0,  0,  0,  0,

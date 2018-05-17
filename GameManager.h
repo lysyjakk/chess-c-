@@ -7,13 +7,14 @@ class GameManager{
     public:
         Pieces *board[8][8];
 
-        GameManager();
+        GameManager(Game *game);
         bool canMove(int currentX, int currentY, int targetX, int targetY);
         bool checkMate();
         void makeMove(int currentX, int currentY, int targetX, int targetY);
 
     private:
         bool blackMove;
+        Game *game;
 
         bool move(Pieces* wks, int x, int y);
         bool canKingMove(int targetX, int targetY, bool blackTurn, bool check);

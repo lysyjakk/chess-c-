@@ -4,8 +4,9 @@ Pieces* lastMovedPawn;
 bool check = false;
 
 
-GameManager::GameManager(){
+GameManager::GameManager(Game *game){
     blackMove = false;
+    this -> game = game;
 }
 
 bool GameManager::canMove(int currentX, int currentY, int targetX, int targetY){
@@ -255,6 +256,13 @@ void GameManager::makeMove(int currentX, int currentY, int targetX, int targetY)
     board[targetY][targetX] -> boardX = targetX;
     board[targetY][targetX] -> boardY = targetY;
     board[targetY][targetX] -> isMoved();
+
+    if(typeid(*board[targetY][targetX]) == typeid(Pawn)){
+        if(!blackMove && targetY == 7)
+            game -> pormotionPawn(!blackMove, targetX, targetY);
+        else if(blackMove && targetY == 0)
+            game -> pormotionPawn(!blackMove, targetX, targetY);
+    }
 }
 
 bool GameManager::checkMate(){

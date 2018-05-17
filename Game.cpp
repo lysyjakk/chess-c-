@@ -5,15 +5,23 @@
 
 SDL_Texture *boardTexture;
 SDL_Texture *fieldSelection;
-GameManager gameManager;
+SDL_Texture *queen;
+SDL_Texture *bishop;
+SDL_Texture *rook;
+SDL_Texture *horse;
 
-//Pieces *board[8][8];
 
+bool blackPawn;
 bool pieceGrab = false;
+
 int pieceX, pieceY;
+int pawnX, pawnY;
+
+GameManager *gameManager;
 
 
 Game::Game(){
+    gameManager = new GameManager(this);
 }
 
 Game::~Game(){
@@ -47,7 +55,6 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     boardTexture = TextureManager::LoadTexture("./texture/GreenChessboard.png", renderer);
     fieldSelection = TextureManager::LoadTexture("./texture/field.png", renderer);
     startGame();
-    promotionWindow();
 }
 
 void Game::handleEvent(){
@@ -61,38 +68,49 @@ void Game::handleEvent(){
 
             case SDL_MOUSEBUTTONDOWN:
                 if(event.button.button == SDL_BUTTON_LEFT){
-                    if(!pieceGrab){
-                        int moduloX = ((int)event.button.x - 27) / 100;
-                        int moduloY = ((int)event.button.y - 27) / 100;
 
-                        if(gameManager.board[moduloY][moduloX] == nullptr) break;
+                    if(!promotion){
+                        if(!pieceGrab){
+                            int moduloX = ((int)event.button.x - 27) / 100;
+                            int moduloY = ((int)event.button.y - 27) / 100;
 
-                        pieceGrab = true;
-                        pieceX = moduloX;
-                        pieceY = moduloY;
+                            if(gameManager -> board[moduloY][moduloX] == nullptr) break;
 
-                    } else {
-                        pieceGrab = false;
-                        int moduloX = ((int)event.button.x - 27) / 100;
-                        int moduloY = ((int)event.button.y - 27) / 100;
-                        //moze umiescic
-                        if(gameManager.canMove(pieceX, pieceY, moduloX, moduloY)){
-                            gameManager.board[pieceY][pieceX] -> grab((Sint32)((moduloX * 100) + 72), (Sint32)((moduloY * 100) + 72));
-                            gameManager.makeMove(pieceX, pieceY, moduloX, moduloY);
+                            pieceGrab = true;
+                            pieceX = moduloX;
+                            pieceY = moduloY;
 
-                            if(gameManager.checkMate())
-                                runnging = false;
                         } else {
-                            gameManager.board[pieceY][pieceX] -> grab((Sint32)((pieceX * 100) + 72), (Sint32)((pieceY * 100) + 72));
+                            pieceGrab = false;
+                            int moduloX = ((int)event.button.x - 27) / 100;
+                            int moduloY = ((int)event.button.y - 27) / 100;
+                            //moze umiescic
+                            if(gameManager -> canMove(pieceX, pieceY, moduloX, moduloY)){
+                                gameManager -> board[pieceY][pieceX] -> grab((Sint32)((moduloX * 100) + 72), (Sint32)((moduloY * 100) + 72));
+                                gameManager -> makeMove(pieceX, pieceY, moduloX, moduloY);
+
+                                if(gameManager -> checkMate())
+                                    runnging = false;
+                            } else {
+                                gameManager -> board[pieceY][pieceX] -> grab((Sint32)((pieceX * 100) + 72), (Sint32)((pieceY * 100) + 72));
+                            }
                         }
+                    } else {
+                        int moduloX = (int)event.button.x / 100;
+                        promotion = false;
+                        promotions(moduloX);
+
+                        SDL_DestroyRenderer(promotionRend);
+                        SDL_DestroyWindow(promotionWin);
+
                     }
                 }
 
             break;
 
             default:
-                if(pieceGrab){
-                    gameManager.board[pieceY][pieceX] -> grab(event.button.x, event.button.y);
+                if(pieceGrab && !promotion){
+                    gameManager -> board[pieceY][pieceX] -> grab(event.button.x, event.button.y);
                     fieldSelectionMove((event.button.x - 27) / 100, (event.button.y - 27) / 100);
                 }
             break;
@@ -106,19 +124,48 @@ void Game::update(){
 
 void Game::render(){
     SDL_RenderClear(renderer);
-    SDL_RenderClear(promotionRend);
     SDL_RenderCopy(renderer, boardTexture, NULL, NULL);
+
     if(pieceGrab)
         SDL_RenderCopy(renderer, fieldSelection, &srcRect, &destRect);
-    //blackKing -> render();
+
     for(int i = 0; i < 8; i++){
         for(int k = 0; k < 8; k++){
-            if(gameManager.board[i][k] == nullptr) continue;
-            gameManager.board[i][k] -> render();
+            if(gameManager -> board[i][k] == nullptr) continue;
+            gameManager -> board[i][k] -> render();
         }
     }
     SDL_RenderPresent(renderer);
-    SDL_RenderPresent(promotionRend);
+
+    if(promotion){
+        SDL_RenderClear(promotionRend);
+
+        srcRect.w = 99;
+        srcRect.h = 99;
+        srcRect.x = 0;
+        srcRect.y = 0;
+
+        destRect.x = 0;
+        destRect.y = 20;
+        destRect.w = srcRect.w;
+        destRect.h = srcRect.h;
+
+        SDL_RenderCopy(promotionRend, queen, &srcRect, &destRect);
+
+        destRect.x += 100;
+
+        SDL_RenderCopy(promotionRend, rook, &srcRect, &destRect);
+
+        destRect.x += 100;
+
+        SDL_RenderCopy(promotionRend, bishop, &srcRect, &destRect);
+
+        destRect.x += 100;
+
+        SDL_RenderCopy(promotionRend, horse, &srcRect, &destRect);
+
+        SDL_RenderPresent(promotionRend);
+    }
 }
 
 void Game::clean(){
@@ -148,55 +195,55 @@ int start[8][8] = {-1, -2, -3, -4, -5, -3, -2, -1,
         for(int k = 0; k < 8; k++){
             switch(start[i][k]){
                 case 1:
-                    gameManager.board[i][k] = new Rook(27 + (k * 100), 27 + (i * 100), "./texture/WhiteRook.png", renderer, false);
+                    gameManager -> board[i][k] = new Rook(27 + (k * 100), 27 + (i * 100), "./texture/WhiteRook.png", renderer, false);
                 break;
 
                 case 2:
-                    gameManager.board[i][k] = new Horse(27 + (k * 100), 27 + (i * 100), "./texture/WhiteHorse.png", renderer, false);
+                    gameManager -> board[i][k] = new Horse(27 + (k * 100), 27 + (i * 100), "./texture/WhiteHorse.png", renderer, false);
                 break;
 
                 case 3:
-                    gameManager.board[i][k] = new Bishop(27 + (k * 100), 27 + (i * 100), "./texture/WhiteBishop.png", renderer, false);
+                    gameManager -> board[i][k] = new Bishop(27 + (k * 100), 27 + (i * 100), "./texture/WhiteBishop.png", renderer, false);
                 break;
 
                 case 4:
-                    gameManager.board[i][k] = new Queen(27 + (k * 100), 27 + (i * 100), "./texture/WhiteHetman.png", renderer, false);
+                    gameManager -> board[i][k] = new Queen(27 + (k * 100), 27 + (i * 100), "./texture/WhiteHetman.png", renderer, false);
                 break;
 
                 case 5:
-                    gameManager.board[i][k] = new King(27 + (k * 100), 27 + (i * 100), "./texture/WhiteKing.png", renderer, false);
+                    gameManager -> board[i][k] = new King(27 + (k * 100), 27 + (i * 100), "./texture/WhiteKing.png", renderer, false);
                 break;
 
                 case 6:
-                    gameManager.board[i][k] = new Pawn(27 + (k * 100), 27 + (i * 100), "./texture/WhitePawn.png", renderer, false);
+                    gameManager -> board[i][k] = new Pawn(27 + (k * 100), 27 + (i * 100), "./texture/WhitePawn.png", renderer, false);
                 break;
 
                 case -1:
-                    gameManager.board[i][k] = new Rook(27 + (k * 100), 27 + (i * 100), "./texture/BlackRook.png", renderer, true);
+                    gameManager -> board[i][k] = new Rook(27 + (k * 100), 27 + (i * 100), "./texture/BlackRook.png", renderer, true);
                 break;
 
                 case -2:
-                    gameManager.board[i][k] = new Horse(27 + (k * 100), 27 + (i * 100), "./texture/BlackHorse.png", renderer, true);
+                    gameManager -> board[i][k] = new Horse(27 + (k * 100), 27 + (i * 100), "./texture/BlackHorse.png", renderer, true);
                 break;
 
                 case -3:
-                    gameManager.board[i][k] = new Bishop(27 + (k * 100), 27 + (i * 100), "./texture/BlackBishop.png", renderer, true);
+                    gameManager -> board[i][k] = new Bishop(27 + (k * 100), 27 + (i * 100), "./texture/BlackBishop.png", renderer, true);
                 break;
 
                 case -4:
-                    gameManager.board[i][k] = new Queen(27 + (k * 100), 27 + (i * 100), "./texture/BlackHetman.png", renderer, true);
+                    gameManager -> board[i][k] = new Queen(27 + (k * 100), 27 + (i * 100), "./texture/BlackHetman.png", renderer, true);
                 break;
 
                 case -5:
-                    gameManager.board[i][k] = new King(27 + (k * 100), 27 + (i * 100), "./texture/BlackKing.png", renderer, true);
+                    gameManager -> board[i][k] = new King(27 + (k * 100), 27 + (i * 100), "./texture/BlackKing.png", renderer, true);
                 break;
 
                 case -6:
-                    gameManager.board[i][k] = new Pawn(27 + (k * 100), 27 + (i * 100), "./texture/BlackPawn.png", renderer, true);
+                    gameManager -> board[i][k] = new Pawn(27 + (k * 100), 27 + (i * 100), "./texture/BlackPawn.png", renderer, true);
                 break;
 
                 default:
-                    gameManager.board[i][k] = nullptr;
+                    gameManager -> board[i][k] = nullptr;
                 break;
 
             }
@@ -221,12 +268,62 @@ void Game::fieldSelectionMove(Sint32 x, Sint32 y){
 
 void Game::promotionWindow(){
     if(SDL_Init(SDL_INIT_VIDEO) == 0){
-         promotionWin = SDL_CreateWindow("Promotion", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 150, false);
+         promotionWin = SDL_CreateWindow("Promotion", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 410, 150, false);
          promotionRend = SDL_CreateRenderer(promotionWin, -1, 0);
 
          if(promotionRend){
-            SDL_SetRenderDrawColor(promotionRend, 255, 255, 255, 255);
+            SDL_SetRenderDrawColor(promotionRend, 51, 153, 51, 255);
          }
     }
 
+
+    rook = TextureManager::LoadTexture("./texture/WhiteRook.png", promotionRend);
+    queen = TextureManager::LoadTexture("./texture/WhiteHetman.png", promotionRend);
+    bishop = TextureManager::LoadTexture("./texture/WhiteBishop.png", promotionRend);
+    horse = TextureManager::LoadTexture("./texture/WhiteHorse.png", promotionRend);
+}
+
+
+void Game::promotions(short int pawn){
+
+    gameManager -> board[pawnY][pawnX] -> destroy();
+
+    switch(pawn){
+        case 0:
+            if(blackPawn)
+                gameManager -> board[pawnY][pawnX] = new Queen(27 + (pawnX * 100), 27 + (pawnY * 100), "./texture/BlackHetman.png", renderer, true);
+            else
+                gameManager -> board[pawnY][pawnX] = new Queen(27 + (pawnX * 100), 27 + (pawnY * 100), "./texture/WhiteHetman.png", renderer, false);
+        break;
+
+        case 1:
+            if(blackPawn)
+                gameManager -> board[pawnY][pawnX] = new Rook(27 + (pawnX * 100), 27 + (pawnY * 100), "./texture/BlackRook.png", renderer, true);
+            else
+                gameManager -> board[pawnY][pawnX] = new Rook(27 + (pawnX * 100), 27 + (pawnY * 100), "./texture/WhiteRook.png", renderer, false);
+        break;
+
+        case 2:
+            if(blackPawn)
+                gameManager -> board[pawnY][pawnX] = new Bishop(27 + (pawnX * 100), 27 + (pawnY * 100), "./texture/BlackBishop.png", renderer, true);
+            else
+                gameManager -> board[pawnY][pawnX] = new Bishop(27 + (pawnX * 100), 27 + (pawnY * 100), "./texture/WhiteBishop.png", renderer, false);
+        break;
+
+        case 3:
+            if(blackPawn)
+                gameManager -> board[pawnY][pawnX] = new Horse(27 + (pawnX * 100), 27 + (pawnY * 100), "./texture/BlackHorse.png", renderer, true);
+            else
+                gameManager -> board[pawnY][pawnX] = new Horse(27 + (pawnX * 100), 27 + (pawnY * 100), "./texture/WhiteHorse.png", renderer, false);
+        break;
+    }
+}
+
+void Game::pormotionPawn(bool blackMove, int x, int y){
+    promotion = true;
+    blackPawn = blackMove;
+    pawnX = x;
+    pawnY = y;
+
+    promotionWindow();
 }

@@ -4,13 +4,16 @@
 #include <thread>
 #include "Game.h"
 
-/*
-    This program is implementation of computer chess player,
-    program use MinMax algorithm with ways to optimalizate the code.
-    Code was written by Wojcik Adam to needs BA dissertation.
-    Program doesn't have any copyrights.
-
-    2018
+/**
+*    @name neural network chess player
+*
+*    This program is implementation of computer chess player, program use neural networks.
+*    Code was written to needs BA dissertation.
+*    Program doesn't have any copyrights.
+*
+*    @author Adam Wójcik
+*
+*    2018
 */
 
 Game *game = nullptr;
@@ -35,7 +38,6 @@ int main()
         auto now = Time::now();
         long updateLenght = getMilliseconds(now) - getMilliseconds(lastLoopTime);
         lastLoopTime = now;
-        double delta = updateLenght / ((double)OPTIMAL_TIME);
 
         lastFpsTime += updateLenght;
         fps++;
@@ -52,11 +54,13 @@ int main()
             fps = 0;
         }
         game -> handleEvent();
-        game -> update();
+        //game -> update();
         game -> render();
 
         std::this_thread::sleep_for(std::chrono::milliseconds((getMilliseconds(lastLoopTime) - getMilliseconds(Time::now()) + OPTIMAL_TIME)/1000000));
     }
+
+    game -> clean();
 
     return EXIT_SUCCESS;
 }

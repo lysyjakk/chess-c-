@@ -9,7 +9,7 @@ GameManager::GameManager(Game *game){
     this -> game = game;
 }
 
-bool GameManager::canMove(int currentX, int currentY, int targetX, int targetY){
+bool GameManager::canMove(unsigned int currentX, unsigned int currentY, unsigned int targetX, unsigned int targetY){
 
     bool flag = false;
 
@@ -44,18 +44,18 @@ bool GameManager::canMove(int currentX, int currentY, int targetX, int targetY){
         }
 
         if(check && flag){
-            Pieces *copyBoard[8][8];
+            Pieces *targetPawnPointer;
             King *king;
 
             for(int i = 0; i < 8; i++){
                 for(int k = 0; k < 8; k++){
-                    copyBoard[i][k] = board[i][k];
-
                     if(board[i][k] == nullptr) continue;
                     if(typeid(*board[i][k]) == typeid(King) && board[i][k] -> black == blackMove)
                         king = (King*)board[i][k];
                 }
             }
+
+            targetPawnPointer = board[targetY][targetX];
 
             board[targetY][targetX] = board[currentY][currentX];
             board[currentY][currentX] = nullptr;
@@ -67,10 +67,10 @@ bool GameManager::canMove(int currentX, int currentY, int targetX, int targetY){
             else
                 check = false;
 
-            for(int i = 0; i < 8; i++){
-                for(int k = 0; k < 8; k++)
-                    board[i][k] = copyBoard[i][k];
-            }
+            board[currentY][currentX] = board[targetY][targetX];
+            board[currentY][currentX] -> boardX = currentX;
+            board[currentY][currentX] -> boardY = currentY;
+            board[targetY][targetX] = targetPawnPointer;
         }
 
         if(flag){
@@ -80,6 +80,7 @@ bool GameManager::canMove(int currentX, int currentY, int targetX, int targetY){
                 lastMovedPawn = nullptr;
 
             blackMove ^= true;
+            GameManager::makeMove(currentX, currentY, targetX, targetY);
         }
     }
 
@@ -399,7 +400,7 @@ bool GameManager::move(Pieces *wsk, int x, int y){
                                     }
                                 }
 
-                                else{   // k != 0
+                                else{   // i != 0
                                     if(blackMove){
                                         if(!(board[v[i][0].second][v[i][0].first] == nullptr ? true : board[v[i][0].second][v[i][0].first] -> black)){
                                             breakLoops = true;

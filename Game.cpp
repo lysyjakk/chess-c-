@@ -27,7 +27,7 @@ Game::Game(){
 Game::~Game(){
 }
 
-void Game::init(const char* title, int xPos, int yPos, int width, int height, bool fullscreen){
+void Game::init(const char* title, unsigned int xPos, unsigned int yPos, unsigned int width, unsigned int height, bool fullscreen){
 
     int flag = 0;
 
@@ -86,8 +86,7 @@ void Game::handleEvent(){
                             int moduloY = ((int)event.button.y - 27) / 100;
                             //moze umiescic
                             if(gameManager -> canMove(pieceX, pieceY, moduloX, moduloY)){
-                                gameManager -> board[pieceY][pieceX] -> grab((Sint32)((moduloX * 100) + 72), (Sint32)((moduloY * 100) + 72));
-                                gameManager -> makeMove(pieceX, pieceY, moduloX, moduloY);
+                                gameManager -> board[moduloY][moduloX] -> grab((Sint32)((moduloX * 100) + 72), (Sint32)((moduloY * 100) + 72));
 
                                 if(gameManager -> checkMate())
                                     runnging = false;
@@ -105,7 +104,6 @@ void Game::handleEvent(){
 
                     }
                 }
-
             break;
 
             default:
@@ -117,9 +115,6 @@ void Game::handleEvent(){
         }
     }
 
-}
-
-void Game::update(){
 }
 
 void Game::render(){
